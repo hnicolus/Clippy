@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="src/Clippy/App.axaml" value="src/Clippy/Clippy.csproj" />
+        <entry key="src/Clippy/MainWindow.axaml" value="src/Clippy/Clippy.csproj" />
+        <entry key="src/Clippy/Views/ClipBoardListView.axaml" value="src/Clippy/Clippy.csproj" />
+        <entry key="src/Clippy/Windows/MainWindow.axaml" value="src/Clippy/Clippy.csproj" />
+      </map>
+    </option>
+  </component>
+</project>

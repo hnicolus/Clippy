@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:Clippy.ViewModels"
+             xmlns:models="clr-namespace:Clippy.Models"
+             mc:Ignorable="d"
+             d:DesignWidth="300"
+             d:DesignHeight="320"
+             x:Class="Clippy.Views.ClipBoardListView"
+             Width="300"
+             Height="400"
+             Padding=" 0,20,0,0"
+             x:DataType="viewModels:ClipboardListViewModel">
+    <ScrollViewer>
+        <StackPanel>
+            <ItemsControl Padding="20"
+                          Items="{Binding Items}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="models:ClipboardItem">
+                        <Border Margin="0 10"
+                                BorderBrush="white"
+                                BorderThickness="1"
+                                CornerRadius="3"
+                                BoxShadow="5 5 20 black"
+                                >
+                            <Decorator>
+                                <Button 
+                                    Background="Transparent"
+                                    Width="260"
+                                    Height="60" 
+                                    Content="{Binding Clip.Title}"
+                                    Command="{Binding CopyToClipBoardCommand}"
+                                    CommandParameter="{Binding Clip}"
+                                    />
+                            </Decorator>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
