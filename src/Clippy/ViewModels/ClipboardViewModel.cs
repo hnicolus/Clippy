@@ -19,8 +19,7 @@ public partial class ClipboardViewModel: ObservableObject
     [RelayCommand]
     public void CopyToClipBoard(ClipboardItem clipboardItem)
     {
-        Console.WriteLine(clipboardItem.Text);
-        Console.WriteLine("Coping to clip board");
+        App.Current.Clipboard.SetTextAsync(clipboardItem.Text);
     }
     
     public override bool Equals(object? obj)
