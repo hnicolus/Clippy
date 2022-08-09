@@ -1,54 +1,41 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Xml;
 using Clippy.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Clippy.ViewModels;
-
-public partial class ClipboardListViewModel : ObservableObject
+namespace Clippy.ViewModels
 {
-    [ObservableProperty] private ObservableClipboardList<ClipboardViewModel> items;
-
-    private EventHandler<ClipboardChangedEventArgs> clipboardChangedEventHandler;
-
-    public ClipboardListViewModel()
+    public partial class ClipboardListViewModel : ObservableObject
     {
-        Items = new ObservableClipboardList<ClipboardViewModel>();
-        Task.Run(UpdateClipBoardAsync);
-
-        clipboardChangedEventHandler += OnNewClipboardItemUpdateList;
-    }
-
-    private void OnNewClipboardItemUpdateList(object? sender, ClipboardChangedEventArgs e)
-    {
-        if (e.CanChange)
+        [ObservableProperty]
+        private List<ClipboardViewModel> items = new();
+        private readonly SystemClipboardChecker systemClipboardChecker;
+        public ClipboardListViewModel()
         {
-            Items.Add(new ClipboardViewModel(new ClipboardItem(e.Text)));
-            items.OrderBy((x) => x,
-            Comparer<ClipboardViewModel>.Create((x, y) => x.Clip.CreatedAt.CompareTo(y.Clip.CreatedAt)));
+            systemClipboardChecker = new SystemClipboardChecker();
+            SystemClipboardChecker.ClipboardChangedEventHandler += OnNewClipboardItemUpdateList;
+            SystemClipboardChecker.ClipboardItemClickedEventHandler += OnClipboardItemClicked;
         }
-    }
 
-    private async Task UpdateClipBoardAsync()
-    {
-        while (true)
+        private void OnClipboardItemClicked(object? sender, ClipboardItemClickedEventArgs e)
         {
-            var text = (await App.Current?.Clipboard?.GetTextAsync()).Trim();
-            var isNew = items.FirstOrDefault(x => x.Clip.Text == text) == null;
-            if (isNew)
+            ClipboardViewModel? item = items.FirstOrDefault(x => x.Clip.Text == e.Text);
+
+            if (item != null)
             {
-                clipboardChangedEventHandler.Invoke(this, new ClipboardChangedEventArgs
-                {
-                    CanChange = true,
-                    Text = text
-                });
+                Items = new List<ClipboardViewModel>(items.Where(x => x != item));
             }
-            Thread.Sleep(1000);
         }
+
+        private void OnNewClipboardItemUpdateList(object? sender, NewClipboardItemAddedEventArg e)
+        {
+            if (e.CanChange)
+            {
+                Items.Add(new ClipboardViewModel(new ClipboardItem(e.Text)));
+                Items = new List<ClipboardViewModel>(Items.OrderByDescending(x => x.Count));
+            }
+        }
+
+
     }
 }
